@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>Puzzle_Game</title>
+  <link href="css/reset.css" rel="stylesheet">
+   <style>
+       .canvas {
+          float:left;
+
+       }
+       .hidden {
+          visibility: hidden;
+          position:absolute;
+          top:-9999px;
+          left:-9999px;
+       }
+       div {
+           -webkit-transition:all 1s;
+           -ms-transition:all 1s;
+           -moz-transition:all 1s linear;
+       }
+   </style>
+</head>
+
+<body>
+      <div id="canvas" class="canvas"> </div>
+      <script>
+              var img = document.createElement("img");
+              img.src = "images/attackOnTitan.jpg";
+              img.className = "hidden";
+              img.onload = function(e) {
+                  var img = {
+                     src: "images/attackOnTitan.jpg",
+                     height:this.clientHeight,
+                     width:this.clientWidth
+                  };
+                  onResourceReady(img);
+              };
+              document.body.appendChild(img);
+
+              function onResourceReady(imgObj) {
+                   var Puzzle = new Jigsaw(imgObj, 4, 3, 200);
+
+
+              }
+
+
+              var Puzzle = function() {
+
+
+              };
+
+              var Jigsaw = function(imgObj, v, h, uPixel) {
+                  var canvas =  document.getElementById(this.CONFIG.canvasId),
+                      clipMatrix = createClip(imgObj, v, h, uPixel),
+                      properties = {v:v, h:h, uPixel:uPixel};
+
+                  this.getMatrix = function() {
+                     return clipMatrix;
+                  };
+                  this.getProperties = function() {
+                      return properties;
+                  };
+
+                  function createClip(imgObj, v, h, uPixel) {
+                      var i = 0, j = 0, matrix = [], elm;
+                      for(i; i < v; i++) {
+                          for(j = 0; j < h; j++) {
+                              elm = document.createElement("div");
+                              elm.style.backgroundImage = "url('"+ imgObj.src+"')";
+                              elm.style.backgroundRepeat = "no-repeat";
+                              elm.style.backgroundPosition = "-" + (i*uPixel) + "px " + "-" + (j*uPixel) + "px";
+                              elm.style.position = "absolute";
+                              elm.style.width = uPixel + "px";
+                              elm.style.height = uPixel + "px";
+                              elm.style.border = "solid 1px #CCC";
+                              matrix[i] = matrix[i] ? matrix[i] : [];
+                              matrix[i][j] = elm;
+                              canvas.appendChild(elm);
+                          }
+                      }
+                      return matrix;
+                  }
+
+
+                  this.paintCanvas();
+              };
+
+              Jigsaw.prototype = {
+                  constructor: Jigsaw,
+                  CONFIG: {
+                      canvasId: "canvas"
+                  },
+                  paintCanvas: function() {
+                      var clipMatrix =this.getMatrix(), elm = null, properties = this.getProperties(),i = 0, j = 0,
+                              il = properties.v, jl = properties.h, uPixel = properties.uPixel;
+                      for(i = 0; i < il; i++) {
+                          for(j = 0; j < jl; j++) {
+                              elm = clipMatrix[i][j];
+                              elm.style.left = (i*uPixel) + "px";
+                              elm.style.top = (j*uPixel) + "px";
+                          }
+                      }
+                  }
+              };
+
+      </script>
+</body>
+</html>
